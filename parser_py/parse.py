@@ -40,7 +40,7 @@ CLOSE_TO_OPEN = {
 CLOSING_PARENTHESIS = list(CLOSE_TO_OPEN.keys())
 OPENING_PARENTHESIS = list(CLOSE_TO_OPEN.values())
 
-VARIABLE_CHARS_SET = set(string.ascii_lowercase) | set('_') | set(string.digits)
+VARIABLE_CHARS_SET = set(string.ascii_lowercase) | set('_') | set('@') | set(string.digits)
 
 
 class HeritageAwareString(str):
@@ -478,7 +478,7 @@ def ParseRecordInternals(s,
 
 
 def ParseVariable(s: HeritageAwareString):
-  if (s and s[0] in set(string.ascii_lowercase) | set('_') and
+  if (s and s[0] in set(string.ascii_lowercase) | set('_') | set('@') and
       set(s) <= VARIABLE_CHARS_SET):
     return {'var_name': s}
 

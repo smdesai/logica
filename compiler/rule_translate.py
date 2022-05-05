@@ -402,7 +402,7 @@ class RuleStructure(object):
       if k == '*':
         fields.append('%s.*' % ql.ConvertToSql(v))
       else:
-        fields.append('%s AS %s' % (ql.ConvertToSql(v), LogicaFieldToSqlField(k)))
+        fields.append('%s AS "%s"' % (ql.ConvertToSql(v), LogicaFieldToSqlField(k)))
     r += ',\n'.join('  ' + f for f in fields)
     if (self.tables or self.unnestings or
         self.constraints or self.distinct_denoted):

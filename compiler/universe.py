@@ -129,7 +129,7 @@ class Annotations(object):
       '@Limit', '@OrderBy', '@Ground', '@Flag', '@DefineFlag',
       '@NoInject', '@Make', '@CompileAsTvf', '@With', '@NoWith',
       '@CompileAsUdf', '@ResetFlagValue', '@Dataset', '@AttachDatabase',
-      '@Engine', '@Recursive'
+      '@Engine', '@Recursive', '@Pragma'
   ]
 
   def __init__(self, rules, user_flags):
@@ -148,8 +148,11 @@ class Annotations(object):
     """Query preamble based on annotations and flags."""
     preamble = ''
     attach_database_statements = self.AttachDatabaseStatements()
+    pragma_statements = self.PragmaStatements()
     if attach_database_statements:
       preamble += attach_database_statements + '\n\n'
+    if pragma_statements:
+      preamble += pragma_statements + '\n\n'
     if self.Engine() == 'psql':
       preamble += (
           '-- Initializing PostgreSQL environment.\n'
@@ -207,6 +210,19 @@ class Annotations(object):
     return '\n'.join(
         'ATTACH DATABASE \'%s\' AS %s;' % (v, k)
         for k, v in self.AttachedDatabases().items())
+
+  def PragmaItems(self):
+    result = {}
+    if self.Engine() == 'sqlite':
+      for k, v in self.annotations['@Pragma'].items():
+        if '1' in v:
+          result[k] = v['1']
+    return result
+
+  def PragmaStatements(self):
+    return '\n'.join(
+        'PRAGMA %s=%s;' % (k, v)
+        for k, v in self.PragmaItems().items())
 
   def CompileAsUdf(self, predicate_name):
     result = predicate_name in self.annotations['@CompileAsUdf']

@@ -269,7 +269,14 @@ class QL(object):
 
   def Variable(self, variable):
     if variable['var_name'] in self.vocabulary:
-      return self.vocabulary[variable['var_name']]
+      # TODO: -sd-
+      v = self.vocabulary[variable['var_name']]
+      w = v.split('.')
+      if len(w) == 1:
+        return v
+      else:
+        return '.'.join(w[:-1]) + '."' + w[-1] + '"'
+      #return self.vocabulary[variable['var_name']]
     else:
       if self.debug_undefined_variables:
         return 'UNDEFINED_%s' % variable['var_name']
